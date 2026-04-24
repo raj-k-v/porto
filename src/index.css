@@ -1,0 +1,611 @@
+:root {
+  --font-sans: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'Fira Code', monospace;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  
+  --bg-color: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --accent-color: #ffffff;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--text-primary);
+  color: var(--bg-color);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-color);
+  background-image: url('/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.font-serif { font-family: var(--font-serif); }
+.font-mono { font-family: var(--font-mono); }
+
+.text-secondary { color: var(--text-secondary); }
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: brightness(1.2) blur(10px) url(#displacementFilter);
+  -webkit-backdrop-filter: brightness(1.2) blur(10px) url(#displacementFilter);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* ── Energy Core Sphere ── */
+.energy-core-sphere {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 50px #fff,
+    0 0 100px rgba(255, 255, 255, 0.6),
+    0 0 200px rgba(255, 255, 255, 0.4);
+  z-index: 10;
+  animation: core-pulse 2s infinite ease-in-out;
+}
+
+.core-inner-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: core-inner-pulse 1.5s infinite alternate ease-in-out;
+}
+
+.core-aura {
+  position: absolute;
+  inset: -120px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 80%);
+  border-radius: 50%;
+}
+
+@keyframes core-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.9; }
+}
+
+@keyframes core-inner-pulse {
+  from { transform: scale(0.8); opacity: 0.5; }
+  to { transform: scale(1.2); opacity: 1; }
+}
+
+
+.energy-spiral {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 600px;
+  perspective: 1000px;
+  pointer-events: none;
+}
+
+.mac-dot-red:hover {
+  filter: brightness(1.2);
+  transform: scale(1.1);
+}
+
+.spiral-particle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #000;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  transform-style: preserve-3d;
+  animation: spiral-rise 3s infinite linear;
+  opacity: 0;
+}
+
+@keyframes spiral-rise {
+  0% {
+    opacity: 0;
+    transform: rotateY(calc(var(--index) * (360deg / var(--total)))) translateZ(30px) translateY(0);
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: rotateY(calc(var(--index) * (360deg / var(--total)) + 720deg)) translateZ(40px) translateY(-800px);
+  }
+}
+.beacon-wrap {
+  position: absolute;
+  transform: translateX(-50%);
+  pointer-events: all;
+  cursor: pointer;
+  z-index: 2;
+  /* Larger hitbox for easier hovering */
+  width: 100px;
+  height: 100vh;
+}
+
+/* Hover — beam grows in girth */
+.beacon-wrap:hover .beacon-core {
+  width: 22px;
+}
+
+.beacon-wrap:hover .beacon-inner {
+  width: 70px;
+}
+
+.beacon-wrap:hover .beacon-outer {
+  width: 200px;
+}
+
+.beacon-wrap:hover .beacon-flare {
+  width: 60px;
+  height: 60px;
+}
+
+/* ── Core beam — thick white column ── */
+.beacon-core {
+  position: absolute;
+  width: 12px;
+  height: 47vh; /* Reaches absolute top */
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 3%,
+    rgba(255, 255, 255, 1) 6%,
+    rgba(255, 255, 255, 0.8) 15%,
+    rgba(255, 255, 255, 0.4) 40%,
+    rgba(255, 255, 255, 0.1) 80%,
+    transparent 100%
+  );
+  animation: beam-breathe 2s ease-in-out infinite alternate;
+}
+
+/* ── Inner glow — medium width shimmer ── */
+.beacon-inner {
+  position: absolute;
+  width: 40px;
+  height: 47vh; /* Reaches absolute top */
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 4%,
+    rgba(255, 255, 255, 0.5) 8%,
+    rgba(200, 220, 255, 0.25) 20%,
+    rgba(180, 210, 255, 0.1) 50%,
+    transparent 100%
+  );
+  filter: blur(6px);
+  animation: beam-breathe 2.5s ease-in-out infinite alternate-reverse;
+}
+
+/* ── Outer glow — wide ambient light ── */
+.beacon-outer {
+  position: absolute;
+  width: 120px;
+  height: 47vh; /* Reaches absolute top */
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 5%,
+    rgba(255, 255, 255, 0.2) 10%,
+    rgba(200, 220, 255, 0.08) 30%,
+    transparent 100%
+  );
+  filter: blur(20px);
+  animation: beam-breathe 3s ease-in-out infinite alternate;
+}
+
+/* ── Rising particles flowing upward ── */
+.beacon-particles {
+  position: absolute;
+  width: 30px;
+  height: 47vh; /* Reaches absolute top */
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  overflow: hidden;
+}
+
+.beacon-particles::before,
+.beacon-particles::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.9), transparent);
+  border-radius: 4px;
+  animation: particle-rise 1.8s linear infinite;
+}
+
+.beacon-particles::after {
+  width: 3px;
+  height: 25px;
+  left: 35%;
+  animation-delay: -0.9s;
+  animation-duration: 2.2s;
+}
+
+/* ── Base flare at the peak ── */
+.beacon-flare {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 50%;
+  bottom: -15px;
+  transform: translateX(-50%);
+  transition: width 0.4s ease, height 0.4s ease;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 40%, transparent 70%);
+  border-radius: 50%;
+  animation: flare-pulse 1.5s ease-in-out infinite alternate;
+}
+
+/* ── Animations ── */
+@keyframes beam-breathe {
+  0% {
+    opacity: 0.6;
+    transform: translateX(-50%) scaleX(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1.15);
+  }
+}
+
+@keyframes particle-rise {
+  0% {
+    bottom: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    bottom: 80vh;
+    opacity: 0;
+  }
+}
+
+@keyframes flare-pulse {
+  0% {
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* ── Dark bubbles rising in the beam ── */
+.beacon-bubbles {
+  position: absolute;
+  width: 60px;
+  height: 100vh;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(40, 40, 40, 0.9), #000);
+  box-shadow: inset -1px -1px 2px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.4);
+  bottom: -20px;
+  opacity: 0;
+}
+
+.b1 { width: 8px; height: 8px; left: 20%; animation: bubble-rise 5s infinite ease-in; }
+.b2 { width: 5px; height: 5px; left: 70%; animation: bubble-rise 7s infinite ease-in 1.5s; }
+.b3 { width: 12px; height: 12px; left: 40%; animation: bubble-rise 6s infinite ease-in 3.2s; }
+.b4 { width: 6px; height: 6px; left: 10%; animation: bubble-rise 8s infinite ease-in 0.5s; }
+.b5 { width: 9px; height: 9px; left: 80%; animation: bubble-rise 5.5s infinite ease-in 2.2s; }
+.b6 { width: 4px; height: 4px; left: 30%; animation: bubble-rise 9s infinite ease-in 4.1s; }
+.b7 { width: 7px; height: 7px; left: 55%; animation: bubble-rise 6.5s infinite ease-in 1.0s; }
+.b8 { width: 11px; height: 11px; left: 25%; animation: bubble-rise 7.5s infinite ease-in 5.5s; }
+
+@keyframes bubble-rise {
+  0% { 
+    bottom: 0; 
+    opacity: 0; 
+    transform: translateX(0) scale(0.5); 
+  }
+  20% { 
+    opacity: 0.8; 
+    transform: translateX(-5px) scale(1);
+  }
+  50% {
+    transform: translateX(10px) scale(1.1);
+  }
+  100% { 
+    bottom: 90vh; 
+    opacity: 0; 
+    transform: translateX(-15px) scale(0.8); 
+  }
+}
+
+/* ── Standing 3D Text Ring ── */
+.beacon-text-ring {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%) rotateX(60deg); /* Tilted more upward */
+  transform-style: preserve-3d;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.standing-char {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: white;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 26px;
+  font-style: normal !important;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+  opacity: 0.8;
+  transition: all 0.6s ease;
+  transform-origin: center;
+  will-change: transform; /* Hardware acceleration */
+  backface-visibility: hidden;
+  
+  /* Reverting to the rotateZ orbit model and adding vertical stretch */
+  animation: char-orbit 20s linear infinite;
+  animation-delay: calc(20s / var(--total) * var(--index) * -1);
+}
+
+@keyframes char-orbit {
+  0% { 
+    /* translateZ(0) forces GPU layer promotion for smoother FPS */
+    transform: rotateZ(0deg) translateY(-180px) rotateZ(0deg) rotateX(-60deg) scaleY(1.5) translateZ(0); 
+  }
+  100% { 
+    transform: rotateZ(360deg) translateY(-180px) rotateZ(-360deg) rotateX(-60deg) scaleY(1.5) translateZ(0); 
+  }
+}
+
+/* ── Mountain Energy Lines ── */
+.energy-line {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: energy-flow 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  opacity: 0;
+}
+
+.line-delay-1 { animation-delay: 1.5s; }
+.line-delay-2 { animation-delay: 3s; }
+.line-delay-3 { animation-delay: 4.5s; }
+
+@keyframes energy-flow {
+  0% {
+    stroke-dashoffset: 500;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* ── Realistic Orbiting Clouds ── */
+.clouds-container {
+  position: absolute;
+  left: 35%; /* Shifted to the left */
+  top: -10%; /* Shifted higher up */
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  z-index: 20; /* Absolute top of the beam */
+  perspective: 1500px;
+}
+
+.clouds-orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: cloud-drift 30s linear infinite;
+}
+
+.cloud {
+  position: absolute;
+  width: 700px;
+  height: 350px;
+  /* Neutral grey color palette */
+  background: radial-gradient(ellipse at center, rgba(120, 120, 120, 0.8) 0%, rgba(50, 50, 50, 0.6) 40%, transparent 85%);
+  filter: url(#cloudy) blur(12px);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.c1 { top: -50px; left: -300px; animation: cloud-float 20s infinite alternate; }
+.c2 { top: 20px; left: 100px; animation: cloud-float 25s infinite alternate-reverse; opacity: 0.6; }
+.c3 { top: -80px; left: -100px; animation: cloud-float 18s infinite alternate; opacity: 0.8; }
+.c4 { top: 50px; left: -400px; animation: cloud-float 35s infinite alternate-reverse; opacity: 0.4; }
+
+@keyframes cloud-drift {
+  from { transform: translateX(-10%); }
+  to { transform: translateX(10%); }
+}
+
+@keyframes cloud-float {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(50px, 20px) scale(1.1); }
+}
+
+/* ── Shared Portfolio Patterns ── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  opacity: 0.8;
+  box-shadow: 0 0 8px var(--accent-color);
+}
+
+.bento-item {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  padding: 32px;
+  transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), 
+              background-color 0.6s cubic-bezier(0.2, 1, 0.3, 1),
+              border-color 0.6s cubic-bezier(0.2, 1, 0.3, 1),
+              box-shadow 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  will-change: transform;
+}
+
+.bento-item:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.blog-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.25s;
+}
+
+.blog-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateX(4px);
+}
+
+.skill-tag {
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.78rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.skill-tag:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+}
