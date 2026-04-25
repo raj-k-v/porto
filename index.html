@@ -27,9 +27,9 @@
 
   <!-- Liquid Glass SVG Filter -->
   <svg style="display: none;">
-    <filter id="displacementFilter" x="-50%" y="-50%" width="200%" height="200%">
-      <feImage href="/map.png" result="turbulence" preserveAspectRatio="none" />
-      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="500" xChannelSelector="R" yChannelSelector="G" />
+    <filter id="displacementFilter">
+      <feImage href="/map.png" preserveAspectRatio="none" />
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="150" xChannelSelector="R" yChannelSelector="G" />
     </filter>
   </svg>
 </body>

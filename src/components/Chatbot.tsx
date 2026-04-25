@@ -122,11 +122,11 @@ const Chatbot: React.FC = () => {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 20px 50px rgba(0,0,0,0.4)',
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'brightness(1.2) blur(1.5px) url(#displacementFilter)',
-        WebkitBackdropFilter: 'brightness(1.2) blur(1.5px) url(#displacementFilter)',
+        background: 'rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 20px 50px rgba(0,0,0,0.3), inset 0 0 0 3px rgba(15,15,15,0.4), inset 0 0 0 4px rgba(255,255,255,0.05)',
         border: '1px solid rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'brightness(1.1) blur(2px) url(#displacementFilter)',
+        WebkitBackdropFilter: 'brightness(1.1) blur(2px) url(#displacementFilter)',
         cursor: isOpen ? 'default' : 'pointer',
         transformOrigin: 'bottom right'
       }}
