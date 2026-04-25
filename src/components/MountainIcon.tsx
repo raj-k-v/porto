@@ -21,7 +21,7 @@ const MEAN_COMMENTS = [
   "Your cursor is remarkably clumsy."
 ];
 
-function MountainIcon({ onClick }: { onClick: () => void }) {
+function MountainIcon() {
   const containerRef = useRef<HTMLDivElement>(null);
   const splineRef = useRef<any>(null);
   const headRef = useRef<any>(null);

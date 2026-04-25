@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Portal from './Portal';
 
 const CHARS = '!<>-_\\/[]{}—=+*^?#________';

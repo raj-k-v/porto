@@ -1,5 +1,5 @@
-import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useRef, useMemo } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 const mouseGlobal = new THREE.Vector2(0, 0);
@@ -96,9 +96,7 @@ function InteractiveGrid({ color }: { color: string }) {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
+          args={[positions, 3]}
         />
       </bufferGeometry>
       <shaderMaterial 
@@ -126,7 +124,7 @@ function FloatingAtmosphere() {
     return [pos];
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y += delta * 0.03;
       pointsRef.current.rotation.z += delta * 0.01;
@@ -138,9 +136,7 @@ function FloatingAtmosphere() {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
+          args={[positions, 3]}
         />
       </bufferGeometry>
       <pointsMaterial

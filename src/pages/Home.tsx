@@ -49,7 +49,6 @@ export default function Home({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const cloudRef = useRef<HTMLDivElement>(null);
   const [accentPercent, setAccentPercent] = useState(65);
   const [isDragging, setIsDragging] = useState(false);
   const accentColor = interpolateColor(accentPercent / 100);
@@ -663,7 +662,7 @@ export default function Home({
         />
       </div>
 
-      <MountainIcon onClick={onReturn} />
+      <MountainIcon />
       <HomeSceneClickable onClick={onReturn} />
 
       <BackgroundToggle
