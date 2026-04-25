@@ -2,7 +2,7 @@ import React from 'react';
 
 export const ResumeSection: React.FC = () => {
   return (
-    <div className="bento-item resume-section-card" style={{
+    <div className="bento-item resume-section-card liquid-glass" style={{
       marginTop: '60px',
       marginBottom: '80px',
       padding: '60px 80px',
@@ -71,10 +71,7 @@ export const ResumeSection: React.FC = () => {
 
       <style>{`
         .resume-section-card:hover {
-          transform: none !important;
-          background: rgba(255,255,255,0.02) !important;
-          border-color: var(--border-color) !important;
-          box-shadow: none !important;
+          transform: translateY(-4px) !important;
         }
         .resume-button {
           background: var(--accent-pastel);

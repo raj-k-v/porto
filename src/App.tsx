@@ -2,10 +2,13 @@ import { useState, useRef } from 'react';
 import Landing from './pages/Landing';
 import Home from './pages/Home';
 import Chatbot from './components/Chatbot';
+import WebGLScene from './components/WebGLScene';
 import { gsap } from 'gsap';
 
 function App() {
   const [view, setView] = useState<'landing' | 'home'>('landing');
+  const [accentColor, setAccentColor] = useState('#ffffff');
+  const [showBgImage, setShowBgImage] = useState(true);
 
   const bgRef = useRef<HTMLDivElement>(null);
 
@@ -58,16 +61,35 @@ function App() {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           filter: 'blur(0px) brightness(1)',
-          zIndex: 0
+          zIndex: 0,
+          opacity: showBgImage ? 1 : 0,
+          transition: 'opacity 0.5s ease'
         }} 
       />
 
+      {/* WebGL Persistent Background (Always On) */}
+      <WebGLScene 
+        accentColor={view === 'landing' ? '#ffffff' : accentColor} 
+        showParticles={!showBgImage} 
+        showGrid={!showBgImage} 
+      />
+
       {/* Content Layer (Stays Crisp) */}
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%' }}>
+      <div style={{ position: 'relative', zIndex: 2, width: '100%', height: '100%' }}>
         {view === 'landing' ? (
-          <Landing onPortalClick={handlePortalClick} />
+          <Landing 
+            onPortalClick={handlePortalClick} 
+            accentColor={accentColor}
+            showBgImage={showBgImage}
+            setShowBgImage={setShowBgImage}
+          />
         ) : (
-          <Home onReturn={handleReturnToLanding} />
+          <Home 
+            onReturn={handleReturnToLanding} 
+            onColorChange={setAccentColor} 
+            showBgImage={showBgImage}
+            setShowBgImage={setShowBgImage}
+          />
         )}
       </div>
 

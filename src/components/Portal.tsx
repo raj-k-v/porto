@@ -4,11 +4,54 @@ import gsap from 'gsap';
 interface PortalProps {
   size?: number;
   onClick?: () => void;
+  onHoverChange?: (hovering: boolean) => void;
 }
 
-export default function Portal({ size = 120, onClick }: PortalProps) {
+export default function Portal({ size = 120, onClick, onHoverChange }: PortalProps) {
   const portalRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const hoverWrapperRef = useRef<HTMLDivElement>(null);
+  const pulseTween = useRef<gsap.core.Tween | null>(null);
+
+  React.useEffect(() => {
+    if (hoverWrapperRef.current) {
+      pulseTween.current = gsap.to(hoverWrapperRef.current, {
+        scale: 1.35,
+        filter: 'brightness(1.5) drop-shadow(0 0 30px rgba(255,255,255,0.6))',
+        duration: 0.9,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        paused: true
+      });
+    }
+    return () => { pulseTween.current?.kill(); };
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (onHoverChange) onHoverChange(true);
+    gsap.killTweensOf(hoverWrapperRef.current);
+    gsap.to(hoverWrapperRef.current, {
+      scale: 1.15,
+      filter: 'brightness(1.2) drop-shadow(0 0 15px rgba(255,255,255,0.3))',
+      duration: 0.4,
+      ease: 'power2.out',
+      onComplete: () => pulseTween.current?.play()
+    });
+  };
+
+  const handleMouseLeave = () => {
+    if (onHoverChange) onHoverChange(false);
+    pulseTween.current?.pause();
+    gsap.killTweensOf(hoverWrapperRef.current);
+    gsap.to(hoverWrapperRef.current, {
+      scale: 1,
+      filter: 'brightness(1) drop-shadow(0 0 0px rgba(255,255,255,0))',
+      duration: 1.2,
+      ease: 'elastic.out(1, 0.5)',
+      overwrite: true
+    });
+  };
 
   const handlePortalClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -100,7 +143,6 @@ export default function Portal({ size = 120, onClick }: PortalProps) {
   return (
     <div 
       className="portal-container"
-      onClick={handlePortalClick}
       style={{
         position: 'relative',
         width: size,
@@ -108,12 +150,15 @@ export default function Portal({ size = 120, onClick }: PortalProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        cursor: 'pointer',
-        zIndex: 5
+        cursor: 'default',
+        zIndex: 5,
+        pointerEvents: 'none' // Disable clicks on outer area
       }}
     >
-      {/* Portal Energy Blob */}
-      <div 
+      {/* Hover Pulse Wrapper */}
+      <div ref={hoverWrapperRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Portal Energy Blob */}
+        <div 
         ref={portalRef}
         className="portal-blob"
         style={{
@@ -156,6 +201,9 @@ export default function Portal({ size = 120, onClick }: PortalProps) {
         <div 
           ref={innerRef}
           className="blob-inner" 
+          onClick={handlePortalClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           style={{
             position: 'absolute',
             inset: '10%', // Larger black core
@@ -163,21 +211,15 @@ export default function Portal({ size = 120, onClick }: PortalProps) {
             borderRadius: 'inherit',
             boxShadow: '0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255,255,255,0.1)',
             zIndex: 10,
-            border: '1px solid rgba(255,255,255,0.1)'
+            border: '1px solid rgba(255,255,255,0.1)',
+            cursor: 'pointer',
+            pointerEvents: 'auto' // Re-enable interaction ONLY for the core
           }} 
         />
       </div>
+      </div>
 
       <style>{`
-        .portal-container:hover .portal-blob {
-          animation: 
-            blob-morph 1.5s ease-in-out infinite, 
-            blob-liquid-pulse 1.2s ease-in-out infinite,
-            energy-liquid 1.2s ease-in-out infinite;
-          filter: brightness(1.4) contrast(1.1);
-          cursor: pointer;
-        }
-
         .portal-blob {
           border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
           background: radial-gradient(circle at center, #fff 0%, #ddd 20%, #999 50%, transparent 80%);
@@ -209,19 +251,9 @@ export default function Portal({ size = 120, onClick }: PortalProps) {
           75% { transform: translate(-2px, -3px) rotate(0.5deg) scale(1.01); }
         }
 
-        @keyframes blob-liquid-pulse {
-          0%, 100% { transform: scale(1.05); }
-          50% { transform: scale(1.35); }
-        }
-
         @keyframes energy-swell {
           0%, 100% { filter: brightness(1) contrast(1); box-shadow: 0 0 40px rgba(255, 255, 255, 0.2); }
           50% { filter: brightness(1.5) contrast(1.2); box-shadow: 0 0 80px rgba(255, 255, 255, 0.5); }
-        }
-
-        @keyframes energy-liquid {
-          0%, 100% { filter: brightness(1.2) contrast(1.1); box-shadow: 0 0 60px rgba(255, 255, 255, 0.4); }
-          50% { filter: brightness(2) contrast(1.3); box-shadow: 0 0 130px rgba(255, 255, 255, 0.8); }
         }
 
         .portal-line-v, .portal-line-h {

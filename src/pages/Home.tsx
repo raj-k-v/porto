@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -12,8 +13,8 @@ import { Projects } from '../components/portfolio/Projects';
 import { ResumeSection } from '../components/portfolio/ResumeSection';
 import { Connect } from '../components/portfolio/Connect';
 import { Footer } from '../components/portfolio/Footer';
-import Clouds from '../components/Clouds';
 import HomeSceneClickable from '../components/HomeSceneClickable';
+import BackgroundToggle from '../components/BackgroundToggle';
 
 const themeStops = [
   { pos: 0, color: '#cba6f7' },
@@ -35,14 +36,28 @@ const interpolateColor = (p: number) => {
   return `rgb(${result.join(',')})`;
 };
 
-export default function Home({ onReturn }: { onReturn: () => void }) {
+export default function Home({
+  onReturn,
+  onColorChange,
+  showBgImage,
+  setShowBgImage
+}: {
+  onReturn: () => void,
+  onColorChange?: (color: string) => void,
+  showBgImage: boolean,
+  setShowBgImage: (v: boolean) => void
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const cloudRef = useRef<HTMLDivElement>(null);
-  const [accentPercent, setAccentPercent] = useState(0);
+  const [accentPercent, setAccentPercent] = useState(65);
   const [isDragging, setIsDragging] = useState(false);
   const accentColor = interpolateColor(accentPercent / 100);
   const sliderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (onColorChange) onColorChange(accentColor);
+  }, [accentColor, onColorChange]);
 
   useEffect(() => {
     if (!isDragging) return;
@@ -65,38 +80,37 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
     };
   }, [isDragging]);
 
-  // Professional GSAP-based Smooth Scrolling (Momentum Scroll)
+  // Smooth scrolling with Lenis
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    if (!containerRef.current) return;
 
-    let targetY = container.scrollTop;
+    const lenis = new Lenis({
+      wrapper: containerRef.current,
+      content: contentRef.current || undefined,
+      lerp: 0.1,
+      duration: 1.2,
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
 
-    const handleWheel = (e: WheelEvent) => {
-      if (e.ctrlKey) return;
-      e.preventDefault();
+    // Synchronize ScrollTrigger with Lenis
+    lenis.on('scroll', () => {
+      ScrollTrigger.update();
+    });
 
-      // Calculate new target with momentum factor
-      targetY += e.deltaY * 1.2;
-      targetY = Math.max(0, Math.min(targetY, container.scrollHeight - container.clientHeight));
-
-      // Use GSAP for the smoothing
-      gsap.to(container, {
-        scrollTop: targetY,
-        duration: 1.2,
-        ease: "power2.out",
-        overwrite: true,
-        onUpdate: () => {
-          // Sync clouds with current scroll for parallax
-          if (cloudRef.current) {
-            cloudRef.current.style.transform = `translateY(${container.scrollTop * -0.3}px)`;
-          }
-        }
-      });
+    const tickerRaf = (time: number) => {
+      lenis.raf(time * 1000);
     };
 
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => container.removeEventListener('wheel', handleWheel);
+    gsap.ticker.add(tickerRaf);
+
+    return () => {
+      lenis.destroy();
+      gsap.ticker.remove(tickerRaf);
+    };
   }, []);
 
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -162,8 +176,8 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
         opacity: 1,
       });
 
-      const tl = gsap.timeline({ defaults: { ease: 'expo.inOut', duration: 0.9 } });
-      tl.to(overlay, { background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(2px)', duration: 0.6 }, 0);
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out', duration: 0.8 } });
+      tl.to(overlay, { background: 'rgba(0,0,0,0.4)', duration: 0.4 }, 0);
       tl.to(modal, {
         x: 0,
         y: 0,
@@ -174,6 +188,9 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
         scale: 1,
         clearProps: 'transform',
       }, 0);
+
+      // Fade in iframe content ONLY after animation finishes
+      tl.to(modalContentRef.current, { opacity: 1, duration: 0.4 }, "-=0.2");
     }
   }, [selectedProject, clickedRect]);
 
@@ -265,6 +282,7 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
       ref={containerRef}
       className="portfolio-home"
       style={{
+        position: 'relative',
         width: '100%',
         height: '100%',
         overflowY: 'auto',
@@ -289,8 +307,7 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
           transform: translateY(-50%);
           width: 40px;
           height: 240px;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
+          background: rgba(20, 20, 20, 0.9);
           border-radius: 99px;
           cursor: pointer;
           z-index: 1000;
@@ -445,9 +462,8 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
 
         .proj-card {
           position: relative;
-          background: rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          background: rgba(255, 255, 255, 0.05);
+
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 32px;
           padding: 48px;
@@ -456,34 +472,16 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), 
-                      background-color 0.8s cubic-bezier(0.2, 1, 0.3, 1),
-                      border-color 0.8s cubic-bezier(0.2, 1, 0.3, 1),
-                      box-shadow 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+          transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
+                      background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+                      border-color 0.6s cubic-bezier(0.23, 1, 0.32, 1);
           cursor: pointer;
-          will-change: transform;
-        }
-
-        .proj-card::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(0,0,0,0.4) 0%, transparent 60%);
-          opacity: 0;
-          transition: opacity 0.5s ease;
-          pointer-events: none;
-        }
-
-        .proj-card:hover::before {
-          opacity: 1;
+          will-change: transform, opacity;
         }
 
         .proj-card:hover {
-          background: rgba(255, 255, 255, 0.05);
           border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-12px) scale(1.01);
-          box-shadow: 0 40px 100px rgba(0,0,0,0.5),
-                      0 0 0 1px rgba(255,255,255,0.05);
+          transform: translateY(-8px);
         }
 
         .proj-preview-container {
@@ -533,7 +531,6 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
           background: rgba(255,255,255,0.04);
           border-color: rgba(255,255,255,0.25);
           transform: translateY(-8px) scale(1.01);
-          box-shadow: 0 40px 80px rgba(0,0,0,0.6);
         }
 
         .proj-card:hover .proj-content {
@@ -544,44 +541,54 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
           position: absolute;
           left: 0;
           top: 0;
-          transform: translate3d(var(--mx-px, 50%), var(--my-px, 50%), 0);
+          transform: translate3d(var(--mx-px, 50%), var(--my-px, 50%), 0) rotate(var(--mr, 0deg));
           pointer-events: none;
           z-index: 100;
           opacity: 0;
-          transition: opacity 0.4s ease, 
-                      transform 0.1s cubic-bezier(0.23, 1, 0.32, 1);
-          will-change: transform;
+          transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: transform, opacity;
         }
 
         .proj-cursor-inner {
-          transform: translate(-50%, -50%) scale(0.5);
-          background: #fff;
+          transform: translate(-50%, -50%) scale(0);
+          background: rgba(255, 255, 255, 0.95);
           color: #000;
-          padding: 10px 20px;
+          padding: 10px 22px;
           border-radius: 99px;
           font-family: var(--font-mono);
           font-size: 0.65rem;
-          font-weight: 600;
-          letter-spacing: 0.15em;
+          font-weight: 500;
+          letter-spacing: 0.2em;
           text-transform: uppercase;
-          transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.35);
-          box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-          backdrop-filter: blur(4px);
+          transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease;
+          box-shadow: 0 15px 45px rgba(0,0,0,0.4), 0 0 15px var(--accent-color)44;
           white-space: nowrap;
+          border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
         .proj-card:hover .proj-cursor-label {
           opacity: 1;
         }
 
-        .proj-card:hover .proj-cursor-inner {
-          transform: translate(-50%, -50%) scale(1);
-          animation: cursor-pulse 2s infinite ease-in-out;
+        .proj-actions:hover + .proj-cursor-label {
+          opacity: 0 !important;
+          pointer-events: none;
         }
 
-        @keyframes cursor-pulse {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); }
-          50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 20px 45px rgba(0,0,0,0.5); }
+        .proj-card:hover .proj-cursor-inner {
+          transform: translate(-50%, -50%) scale(1);
+          animation: cursor-breath 2.5s infinite ease-in-out;
+        }
+
+        @keyframes cursor-breath {
+          0%, 100% { 
+            transform: translate(-50%, -50%) scale(1); 
+            opacity: 1;
+          }
+          50% { 
+            transform: translate(-50%, -50%) scale(1.05); 
+            opacity: 0.9;
+          }
         }
 
         .proj-tag {
@@ -656,26 +663,15 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
         />
       </div>
 
-      <div className="dotted-grid" />
-
-      <div
-        ref={cloudRef}
-        style={{
-          position: 'fixed',
-          left: '30%',
-          top: '-20%',
-          width: '100%',
-          height: '100%',
-          zIndex: -1,
-          pointerEvents: 'none',
-          willChange: 'transform'
-        }}
-      >
-        <Clouds />
-      </div>
-
       <MountainIcon onClick={onReturn} />
       <HomeSceneClickable onClick={onReturn} />
+
+      <BackgroundToggle
+        showBgImage={showBgImage}
+        setShowBgImage={setShowBgImage}
+        accentColor={accentColor}
+        isFixed={false}
+      />
 
       {/* SCROLLABLE CONTENT WRAPPER */}
       <div
@@ -759,9 +755,7 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
               boxShadow: '0 60px 120px rgba(0,0,0,0.8)',
               position: 'relative',
               pointerEvents: 'auto',
-              background: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(30px)',
-              WebkitBackdropFilter: 'blur(30px)'
+              background: 'rgba(15, 15, 15, 0.95)',
             }}
           >
             <div style={{
@@ -807,7 +801,13 @@ export default function Home({ onReturn }: { onReturn: () => void }) {
 
             <div
               ref={modalContentRef}
-              style={{ flex: 1, background: '#fff', position: 'relative', overflow: 'hidden' }}
+              style={{
+                flex: 1,
+                background: '#fff',
+                position: 'relative',
+                overflow: 'hidden',
+                opacity: 0 // Start hidden for smooth animation
+              }}
             >
               <iframe
                 src={selectedProject.visit}

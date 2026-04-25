@@ -1,13 +1,22 @@
 import { useEffect, useRef } from 'react';
 import Beacon from '../components/Beacon';
 import Clouds from '../components/Clouds';
+import BackgroundToggle from '../components/BackgroundToggle';
 import { gsap } from 'gsap';
 
 interface LandingProps {
   onPortalClick: () => void;
+  accentColor: string;
+  showBgImage: boolean;
+  setShowBgImage: (v: boolean) => void;
 }
 
-export default function Landing({ onPortalClick }: LandingProps) {
+export default function Landing({ 
+  onPortalClick, 
+  accentColor, 
+  showBgImage, 
+  setShowBgImage 
+}: LandingProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,6 +36,13 @@ export default function Landing({ onPortalClick }: LandingProps) {
     >
       <Beacon left="49%" bottom="53%" onClick={onPortalClick} />
       <Clouds />
+      
+      <BackgroundToggle 
+        showBgImage={showBgImage} 
+        setShowBgImage={setShowBgImage} 
+        accentColor={accentColor} 
+        isFixed={true}
+      />
     </div>
   );
 }

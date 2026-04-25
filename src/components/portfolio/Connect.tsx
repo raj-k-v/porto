@@ -52,11 +52,14 @@ export const Connect: React.FC = () => {
           Connect
         </h2>
         <p style={{
-          fontSize: '1.1rem',
+          fontSize: '0.9rem',
           lineHeight: '1.6',
           color: 'rgba(255, 255, 255, 0.5)',
           maxWidth: '450px',
-          margin: 0
+          margin: 0,
+          fontFamily: 'var(--font-mono)',
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase'
         }}>
           I am eager to connect and build something impactful. Whether it's systems engineering or agentic AI — let's talk.
         </p>

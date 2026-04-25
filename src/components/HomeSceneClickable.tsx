@@ -65,7 +65,7 @@ export default function HomeSceneClickable({ onClick }: HomeSceneClickableProps)
       ref={containerRef}
       onClick={handleClick}
       style={{
-        position: 'fixed',
+        position: 'absolute',
         top: '30px',
         right: '30px',
         zIndex: 1000,

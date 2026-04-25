@@ -14,6 +14,7 @@ const ProjectCard: React.FC<{
   selectedProjectName?: string;
 }> = ({ p, onProjectClick, selectedProjectName }) => {
   const cardRef = React.useRef<HTMLDivElement>(null);
+  const lastX = React.useRef(0);
 
   return (
     <div
@@ -29,18 +30,19 @@ const ProjectCard: React.FC<{
         const rect = cardRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
+        
+        // Dynamic Physics: Calculate horizontal tilt based on velocity
+        const dx = e.clientX - lastX.current;
+        const rotation = Math.max(-15, Math.min(15, dx * 0.8));
+        
         cardRef.current.style.setProperty('--mx-px', `${x}px`);
         cardRef.current.style.setProperty('--my-px', `${y}px`);
-        const xp = (x / rect.width * 100).toFixed(1);
-        const yp = (y / rect.height * 100).toFixed(1);
-        cardRef.current.style.setProperty('--mx', `${xp}%`);
-        cardRef.current.style.setProperty('--my', `${yp}%`);
+        cardRef.current.style.setProperty('--mr', `${rotation}deg`);
+        
+        lastX.current = e.clientX;
       }}
     >
-      {/* Cursor Follower Label */}
-      <div className="proj-cursor-label">
-        <div className="proj-cursor-inner">PREVIEW</div>
-      </div>
+
 
       {/* Content Layer */}
       <div className="proj-content" style={{ position: 'relative', zIndex: 1, transition: 'opacity 0.4s ease' }}>
@@ -62,6 +64,11 @@ const ProjectCard: React.FC<{
         <a href={p.source} target="_blank" rel="noreferrer" className="proj-action-btn" onClick={e => e.stopPropagation()}>
           <GithubIcon size={12} /> Source
         </a>
+      </div>
+
+      {/* Cursor Follower Label */}
+      <div className="proj-cursor-label">
+        <div className="proj-cursor-inner">PREVIEW</div>
       </div>
     </div>
   );

@@ -143,9 +143,6 @@ function MountainIcon({ onClick }: { onClick: () => void }) {
       setMessage("");
       clickCount.current = 0;
     }, 4000);
-
-    // Trigger parent return action
-    onClick();
   };
 
   return (
