@@ -21,7 +21,7 @@ const MEAN_COMMENTS = [
   "Your cursor is remarkably clumsy."
 ];
 
-function MountainIcon({ onClick: parentOnClick }: { onClick: () => void }) {
+function MountainIcon({ onClick }: { onClick: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const splineRef = useRef<any>(null);
   const headRef = useRef<any>(null);
@@ -143,6 +143,9 @@ function MountainIcon({ onClick: parentOnClick }: { onClick: () => void }) {
       setMessage("");
       clickCount.current = 0;
     }, 4000);
+
+    // Trigger parent return action
+    onClick();
   };
 
   return (

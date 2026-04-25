@@ -23,7 +23,7 @@ const ProjectCard: React.FC<{
         opacity: selectedProjectName === p.name ? 0 : 1,
         pointerEvents: selectedProjectName ? 'none' : 'auto'
       }}
-      onClick={(e) => onProjectClick(p, cardRef.current?.getBoundingClientRect())}
+      onClick={() => onProjectClick(p, cardRef.current?.getBoundingClientRect())}
       onMouseMove={e => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
@@ -51,7 +51,7 @@ const ProjectCard: React.FC<{
         </div>
         <p style={{ fontSize: '1rem', lineHeight: 1.6, opacity: 0.5, marginBottom: '32px', fontWeight: 400 }}>{p.desc}</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {p.tags.map(t => <span key={t} className="proj-tag">{t}</span>)}
+          {p.tags.map((t: string) => <span key={t} className="proj-tag">{t}</span>)}
         </div>
       </div>
 

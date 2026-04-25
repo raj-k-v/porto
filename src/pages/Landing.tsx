@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Beacon from '../components/Beacon';
 import Clouds from '../components/Clouds';
 import { gsap } from 'gsap';
