@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot } from 'lucide-react';
 import { gsap } from 'gsap';
+import { fetchChatResponse } from '../lib/utils';
+import { parseMarkdown } from '../lib/markdown';
 
 interface Message {
   text: string;
@@ -14,36 +16,44 @@ const Chatbot: React.FC = () => {
     { text: "Hi! I'm Teddu, Raj's AI assistant. Ask me anything about his projects, skills, or experience!", sender: 'bot' }
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const chatContentRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const responses: Record<string, string> = {
-    'skill': "Raj specializes in React, Next.js, and immersive UI/UX design with GSAP.",
-    'project': "Raj has built high-fidelity portfolios, SaaS dashboards, and interactive web experiences.",
-    'experience': "With a focus on advanced frontend development, Raj crafts performant and visually stunning digital products.",
-    'default': "I can tell you more about Raj's technical stack, specific projects, or professional experience!"
-  };
-
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
     const userMsg = { text: input, sender: 'user' as const };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
+    setError(null);
 
-    setTimeout(() => {
-      const lowerInput = input.toLowerCase();
-      let response = responses.default;
-      for (const key in responses) {
-        if (lowerInput.includes(key)) {
-          response = responses[key];
-          break;
-        }
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: input }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
       }
-      setMessages(prev => [...prev, { text: response, sender: 'bot' }]);
+
+      const data = await response.json();
+      const assistantResponse = data.response || 'Sorry, I could not generate a response.';
+
+      setMessages(prev => [...prev, { text: assistantResponse, sender: 'bot' }]);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error connecting to chat service';
+      console.error('Chat error:', err);
+      setError(errorMessage);
+      setMessages(prev => [...prev, { text: `Sorry, there was an error: ${errorMessage}`, sender: 'bot' }]);
+    } finally {
       setIsTyping(false);
-    }, 1200);
+    }
   };
 
   useEffect(() => {
@@ -214,7 +224,11 @@ const Chatbot: React.FC = () => {
                   boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                   fontFamily: 'var(--font-sans)',
                 }}>
-                  {msg.text}
+                  {msg.sender === 'bot' ? (
+                    <div dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.text) }} />
+                  ) : (
+                    msg.text
+                  )}
                 </div>
               </div>
             ))}
