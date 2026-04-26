@@ -127,10 +127,64 @@ export default function Home({
 
     // Initial entry animation for the very top content
     if (contentRef.current) {
-      tl.fromTo(contentRef.current,
-        { opacity: 0, scale: 1.1, filter: 'blur(20px)' },
-        { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' }
-      );
+      const children = Array.from(contentRef.current.children);
+      
+      gsap.set(contentRef.current, { opacity: 1, filter: 'blur(0px)' });
+
+      children.forEach((child, index) => {
+        if (index === 0) {
+          gsap.set(child, { opacity: 1 });
+          
+          // Scattered entry for the Hero section elements
+          tl.fromTo('.hero-anim-top', 
+            { y: -100, opacity: 0, force3D: true }, 
+            { y: 0, opacity: 1, duration: 1.4, ease: 'expo.out', force3D: true }, 0);
+            
+          tl.fromTo('.hero-anim-left', 
+            { x: -150, opacity: 0, rotationY: -20, scale: 0.8, force3D: true }, 
+            { x: 0, opacity: 1, rotationY: 0, scale: 1, duration: 1.6, ease: 'expo.out', stagger: 0.1, force3D: true }, 0.1);
+            
+          tl.fromTo('.hero-anim-right', 
+            { x: 150, opacity: 0, rotationY: 20, scale: 0.8, force3D: true }, 
+            { x: 0, opacity: 1, rotationY: 0, scale: 1, duration: 1.6, ease: 'expo.out', stagger: 0.1, force3D: true }, 0.2);
+            
+          tl.fromTo('.hero-anim-bottom', 
+            { y: 100, opacity: 0, force3D: true }, 
+            { y: 0, opacity: 1, duration: 1.4, ease: 'expo.out', force3D: true }, 0.3);
+            
+          tl.fromTo('.hero-anim-scale', 
+            { scale: 0.5, opacity: 0, force3D: true }, 
+            { scale: 1, opacity: 1, duration: 1.6, ease: 'elastic.out(1, 0.6)', force3D: true }, 0.4);
+            
+          return;
+        }
+
+        const isLeft = index % 2 === 0;
+        const xOffset = isLeft ? -150 : 150;
+        const rotation = isLeft ? -15 : 15;
+
+        gsap.set(child, { transformPerspective: 1200 });
+
+        tl.fromTo(child,
+          { 
+            opacity: 0, 
+            x: xOffset, 
+            rotationY: rotation,
+            scale: 0.9,
+            force3D: true
+          },
+          { 
+            opacity: 1, 
+            x: 0, 
+            rotationY: 0,
+            scale: 1,
+            duration: 1.6, 
+            ease: 'expo.out',
+            force3D: true
+          },
+          0.4 + (index * 0.12) // offset after hero finishes entering
+        );
+      });
     }
 
     // Reveal animations for sections as they scroll into view
@@ -139,14 +193,14 @@ export default function Home({
     sections.forEach((selector) => {
       gsap.utils.toArray(selector).forEach((el: any) => {
         gsap.fromTo(el,
-          { y: 60, opacity: 0, scale: 0.95, filter: 'blur(10px)' },
+          { y: 60, opacity: 0, scale: 0.95, force3D: true },
           {
             y: 0,
             opacity: 1,
             scale: 1,
-            filter: 'blur(0px)',
             duration: 1,
             ease: "power3.out",
+            force3D: true,
             scrollTrigger: {
               trigger: el,
               start: "top 90%",
@@ -364,26 +418,25 @@ export default function Home({
         }
 
         .available-badge {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 8px 16px;
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          padding: 8px 20px;
           border-radius: 99px;
           color: var(--accent-color);
-          font-size: 0.65rem;
-          font-weight: 600;
-          letter-spacing: 0.05em;
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
           text-transform: uppercase;
           text-decoration: none;
           display: inline-flex;
           align-items: center;
-          gap: 10px;
-          transition: all 0.3s;
+          gap: 12px;
+          transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.05);
         }
-        .available-badge:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: var(--accent-color);
-          box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
-        }
+
         .available-dot {
           width: 6px;
           height: 6px;
@@ -419,6 +472,8 @@ export default function Home({
           line-height: 0.85;
           margin: 0;
           color: var(--text-primary);
+          text-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 60px var(--accent-color);
+          transition: text-shadow 0.5s ease;
         }
 
         .section-heading-mix {
@@ -439,10 +494,18 @@ export default function Home({
           text-transform: none;
           letter-spacing: -0.02em;
           background: var(--accent-gradient);
+          background-size: 200% 200%;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           margin-top: 0.1em;
           line-height: 1.1;
+          animation: gradient-shift 6s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
 
         .project-title-large {
@@ -462,9 +525,10 @@ export default function Home({
 
         .proj-card {
           position: relative;
-          background: rgba(255, 255, 255, 0.05);
-
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 32px;
           padding: 48px;
           overflow: hidden;
@@ -472,16 +536,36 @@ export default function Home({
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
-                      background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-                      border-color 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+          transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                      background-color 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                      border-color 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                      box-shadow 1.2s cubic-bezier(0.16, 1, 0.3, 1);
           cursor: pointer;
-          will-change: transform, opacity;
+          will-change: transform, opacity, box-shadow;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.02);
         }
 
         .proj-card:hover {
-          border-color: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.04);
+          border-color: rgba(255, 255, 255, 0.3);
           transform: translateY(-8px);
+          box-shadow: 0 25px 80px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.2);
+        }
+
+        .proj-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--accent-color), transparent 40%);
+          opacity: 0;
+          transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+          z-index: 0;
+          mix-blend-mode: screen;
+        }
+
+        .proj-card:hover::before {
+          opacity: 0.15;
         }
 
         .proj-preview-container {
@@ -525,12 +609,6 @@ export default function Home({
 
         .proj-card:hover .proj-preview-iframe {
           transform: translate(-50%, -50%) scale(0.35);
-        }
-
-        .proj-card:hover {
-          background: rgba(255,255,255,0.04);
-          border-color: rgba(255,255,255,0.25);
-          transform: translateY(-8px) scale(1.01);
         }
 
         .proj-card:hover .proj-content {

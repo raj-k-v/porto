@@ -136,7 +136,10 @@ const Chatbot: React.FC = () => {
         boxShadow: '0 20px 50px rgba(0,0,0,0.3), inset 0 0 0 3px rgba(15,15,15,0.4), inset 0 0 0 4px rgba(255,255,255,0.05)',
         border: '1px solid rgba(255, 255, 255, 0.1)',
         cursor: isOpen ? 'default' : 'pointer',
-        transformOrigin: 'bottom right'
+        transformOrigin: 'bottom right',
+        willChange: 'width, height, border-radius, transform',
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden'
       }}
       onClick={() => { if (!isOpen) setIsOpen(true); }}
     >
@@ -292,6 +295,19 @@ const Chatbot: React.FC = () => {
               color: white !important;
               filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
               transform: scale(1.1);
+            }
+            .typing-dot {
+              width: 4px;
+              height: 4px;
+              background: rgba(255,255,255,0.6);
+              border-radius: 50%;
+              animation: typing 1.4s infinite ease-in-out both;
+            }
+            .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+            .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+            @keyframes typing {
+              0%, 80%, 100% { transform: scale(0); }
+              40% { transform: scale(1); }
             }
           `}</style>
         </div>

@@ -69,12 +69,11 @@ export default function Portal({ size = 120, onClick, onHoverChange }: PortalPro
 
       const tl = gsap.timeline({
         onComplete: () => {
-          onClick();
-          // Reset after transition
+          // Cleanup after the entire animation finishes
           setTimeout(() => {
             gsap.set([portal, inner], { clearProps: 'all' });
             if (container) container.style.zIndex = '5';
-          }, 1500);
+          }, 500);
         }
       });
 
@@ -94,7 +93,6 @@ export default function Portal({ size = 120, onClick, onHoverChange }: PortalPro
       }, "-=0.2");
 
       // 3. THE GLOBAL SINGULARITY ERUPTION
-      // We create a fresh, clean overlay to avoid any CSS conflicts with the portal blob
       const overlay = document.createElement('div');
       Object.assign(overlay.style, {
         position: 'fixed',
@@ -113,10 +111,9 @@ export default function Portal({ size = 120, onClick, onHoverChange }: PortalPro
       tl.to(overlay, {
         width: '300vmax',
         height: '300vmax',
-        duration: 1.0,
+        duration: 0.8,
         ease: "expo.in",
         onStart: () => {
-          // Hide singularity lines right as overlay covers them
           const lines = portal.querySelectorAll('.portal-line-v, .portal-line-h');
           lines.forEach(l => (l as HTMLElement).style.opacity = '0');
         }
@@ -126,15 +123,20 @@ export default function Portal({ size = 120, onClick, onHoverChange }: PortalPro
       tl.to(portal, {
         opacity: 0,
         duration: 0.2
-      }, "-=0.9");
+      }, "-=0.6");
 
-      // Final reveal: fade out the overlay after page change
+      // 4. Switch the page while the screen is fully black
+      tl.call(() => {
+        if (onClick) onClick();
+      });
+
+      // 5. Final reveal: fade out the overlay to reveal the new page
       tl.to(overlay, {
         opacity: 0,
-        duration: 0.5,
-        delay: 0.2,
+        duration: 0.8,
+        ease: "power2.inOut",
         onComplete: () => overlay.remove()
-      });
+      }, "+=0.1"); // slight delay to ensure Home component has mounted
     } else {
       onClick();
     }

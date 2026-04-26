@@ -356,12 +356,12 @@ h6 {
 @keyframes beam-breathe {
   0% {
     opacity: 0.6;
-    transform: translateX(-50%) scaleX(0.85);
+    transform: translateX(-50%) scaleX(0.85) translateZ(0);
   }
 
   100% {
     opacity: 1;
-    transform: translateX(-50%) scaleX(1.15);
+    transform: translateX(-50%) scaleX(1.15) translateZ(0);
   }
 }
 
@@ -387,12 +387,12 @@ h6 {
 
 @keyframes flare-pulse {
   0% {
-    transform: translateX(-50%) scale(0.8);
+    transform: translateX(-50%) scale(0.8) translateZ(0);
     opacity: 0.6;
   }
 
   100% {
-    transform: translateX(-50%) scale(1.3);
+    transform: translateX(-50%) scale(1.3) translateZ(0);
     opacity: 1;
   }
 }
@@ -479,22 +479,22 @@ h6 {
   0% {
     bottom: 0;
     opacity: 0;
-    transform: translateX(0) scale(0.5);
+    transform: translateX(0) scale(0.5) translateZ(0);
   }
 
   20% {
     opacity: 0.8;
-    transform: translateX(-5px) scale(1);
+    transform: translateX(-5px) scale(1) translateZ(0);
   }
 
   50% {
-    transform: translateX(10px) scale(1.1);
+    transform: translateX(10px) scale(1.1) translateZ(0);
   }
 
   100% {
     bottom: 90vh;
     opacity: 0;
-    transform: translateX(-15px) scale(0.8);
+    transform: translateX(-15px) scale(0.8) translateZ(0);
   }
 }
 
@@ -660,23 +660,25 @@ h6 {
 
 @keyframes cloud-drift {
   from {
-    transform: translateX(-10%);
+    transform: translateX(-10%) translateZ(0);
   }
 
   to {
-    transform: translateX(10%);
+    transform: translateX(10%) translateZ(0);
   }
 }
 
 @keyframes cloud-float {
   from {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) scale(1) translateZ(0);
   }
 
   to {
-    transform: translate(50px, 20px) scale(1.1);
+    transform: translate(50px, 20px) scale(1.1) translateZ(0);
   }
 }
+
+
 
 /* ── Shared Portfolio Patterns ── */
 .section-label {

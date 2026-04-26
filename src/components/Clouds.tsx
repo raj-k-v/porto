@@ -20,6 +20,8 @@ export default function Clouds() {
             border-radius: 50%;
             filter: blur(80px); /* Lighter than SVG feTurbulence */
             will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
           }
         `}</style>
         {/* Several realistic cloud layers */}

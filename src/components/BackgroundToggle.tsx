@@ -26,18 +26,18 @@ const BackgroundToggle: React.FC<BackgroundToggleProps> = ({
         height: '72px',
         borderRadius: '99px',
         cursor: 'pointer',
-        background: showBgImage 
-          ? `linear-gradient(180deg, ${accentColor} 0%, ${accentColor}dd 100%)` 
-          : 'linear-gradient(180deg, #111 0%, #222 100%)',
-        border: `1px solid ${showBgImage ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)'}`,
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: `1px solid ${showBgImage ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)'}`,
         transition: 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         padding: '5px',
         boxShadow: showBgImage 
-          ? `0 0 30px ${accentColor}66, inset 0 2px 10px rgba(0,0,0,0.4)` 
-          : '0 10px 40px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.05)',
+          ? `0 0 25px ${accentColor}44, inset 0 0 25px rgba(255,255,255,0.3), inset 0 1px 1px rgba(255,255,255,0.2)` 
+          : '0 10px 40px rgba(0,0,0,0.5), inset 0 0 25px rgba(255,255,255,0.2), inset 0 1px 1px rgba(255,255,255,0.2)',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
@@ -66,8 +66,8 @@ const BackgroundToggle: React.FC<BackgroundToggleProps> = ({
           background: '#fff',
           borderRadius: '50%',
           boxShadow: showBgImage
-            ? '0 5px 15px rgba(0,0,0,0.4), 0 0 20px #fff'
-            : '0 5px 15px rgba(0,0,0,0.6)',
+            ? '0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.5)'
+            : '0 5px 10px rgba(0,0,0,0.5)',
           transform: showBgImage ? 'translateY(0px)' : 'translateY(36px)',
           transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease',
           position: 'relative',

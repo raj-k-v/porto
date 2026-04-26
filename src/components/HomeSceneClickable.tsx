@@ -16,8 +16,8 @@ export default function HomeSceneClickable({ onClick }: HomeSceneClickableProps)
     // Spread effect
     const overlay = document.createElement('div');
     overlay.style.position = 'fixed';
-    overlay.style.top = '50%';
-    overlay.style.left = '50%';
+    overlay.style.top = 'calc(47% - 25px)';
+    overlay.style.left = '49%';
     overlay.style.transform = 'translate(-50%, -50%) scale(0)';
     overlay.style.width = '100vmax';
     overlay.style.height = '100vmax';

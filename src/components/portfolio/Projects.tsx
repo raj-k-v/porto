@@ -20,6 +20,9 @@ const ProjectCard: React.FC<{
   const yTo = React.useRef<any>(null);
   const rTo = React.useRef<any>(null);
 
+  const isHovering = React.useRef(false);
+  const globalMouse = React.useRef({ x: 0, y: 0 });
+
   React.useEffect(() => {
     if (labelRef.current) {
       import('gsap').then(({ gsap }) => {
@@ -28,6 +31,31 @@ const ProjectCard: React.FC<{
         rTo.current = gsap.quickTo(labelRef.current, "rotation", { duration: 1.2, ease: "elastic.out(1, 0.3)" });
       });
     }
+
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      globalMouse.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleScroll = () => {
+      if (!isHovering.current || !cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = globalMouse.current.x - rect.left;
+      const y = globalMouse.current.y - rect.top;
+
+      if (xTo.current) xTo.current(x);
+      if (yTo.current) yTo.current(y);
+
+      cardRef.current.style.setProperty('--mouse-x', `${x}px`);
+      cardRef.current.style.setProperty('--mouse-y', `${y}px`);
+    };
+
+    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      window.removeEventListener('mousemove', handleGlobalMouseMove);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
   }, []);
 
   return (
@@ -40,6 +68,7 @@ const ProjectCard: React.FC<{
       }}
       onClick={() => onProjectClick(p, cardRef.current?.getBoundingClientRect())}
       onMouseEnter={e => {
+        isHovering.current = true;
         if (!cardRef.current || !labelRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -47,6 +76,9 @@ const ProjectCard: React.FC<{
         import('gsap').then(({ gsap }) => {
           gsap.set(labelRef.current, { x, y });
         });
+      }}
+      onMouseLeave={() => {
+        isHovering.current = false;
       }}
       onMouseMove={e => {
         if (!cardRef.current) return;
@@ -61,6 +93,9 @@ const ProjectCard: React.FC<{
         if (yTo.current) yTo.current(y);
         if (rTo.current) rTo.current(rotation);
         
+        cardRef.current.style.setProperty('--mouse-x', `${x}px`);
+        cardRef.current.style.setProperty('--mouse-y', `${y}px`);
+
         lastX.current = e.clientX;
       }}
     >

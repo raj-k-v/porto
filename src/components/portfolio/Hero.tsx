@@ -17,25 +17,25 @@ export const Hero: React.FC<HeroProps> = ({ handleEasterEggMove, handleEasterEgg
       paddingTop: '0px'
     }}>
       <div style={{ flex: '1 1 400px' }}>
-        <a
-          href="mailto:raj@example.com"
-          className="available-badge"
+        <div
+          className="available-badge hero-anim-top"
           style={{
             marginBottom: '40px',
-            display: 'inline-flex'
+            display: 'inline-flex',
+            cursor: 'default'
           }}
         >
           <span className="available-dot" />
           Available for work · Reach out
-        </a>
+        </div>
 
-        <h1 className="minimal-name">
+        <h1 className="minimal-name hero-anim-left">
           <span style={{ fontStyle: 'italic' }}>Ra<span className="j-easter-egg" onMouseMove={handleEasterEggMove} onMouseLeave={handleEasterEggLeave}>j</span></span> V<span style={{ color: 'var(--accent-color)', marginLeft: '2px' }}>.</span>
         </h1>
-        <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '0.2em', opacity: 0.4, marginTop: '15px', textTransform: 'uppercase', fontWeight: 600 }}>
+        <div className="hero-anim-left" style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '0.2em', opacity: 0.4, marginTop: '15px', textTransform: 'uppercase', fontWeight: 600 }}>
           Fullstack <span className="j-easter-egg" onMouseMove={handleEasterEggMove} onMouseLeave={handleEasterEggLeave}>Engineer</span> <span className="j-easter-egg" onMouseMove={handleEasterEggMove} onMouseLeave={handleEasterEggLeave}>&</span> UI Architect
         </div>
-        <p style={{
+        <p className="hero-anim-bottom" style={{
           fontSize: '0.9rem',
           opacity: 0.5,
           marginTop: '40px',
@@ -51,8 +51,8 @@ export const Hero: React.FC<HeroProps> = ({ handleEasterEggMove, handleEasterEgg
       </div>
 
       <div style={{ flex: '1 1 400px', maxWidth: '500px', paddingTop: '82px' }}>
-        <div className="section-label">Engineering Focus</div>
-        <p style={{
+        <div className="section-label hero-anim-right">Engineering Focus</div>
+        <p className="hero-anim-right" style={{
           fontSize: '1.3rem',
           lineHeight: 1.5,
           opacity: 0.8,
@@ -64,7 +64,7 @@ export const Hero: React.FC<HeroProps> = ({ handleEasterEggMove, handleEasterEgg
         }}>
           I don’t build for demos — I solve real-world problems with precision. Every system is engineered to last, every UI crafted to feel perfect.
         </p>
-        <div style={{ marginTop: '40px', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+        <div className="hero-anim-scale" style={{ marginTop: '40px', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           {['Systems Arch', 'Applied AI', 'Motion Design'].map(s => (
             <span key={s} className="skill-tag" style={{
               fontFamily: 'var(--font-mono)',
