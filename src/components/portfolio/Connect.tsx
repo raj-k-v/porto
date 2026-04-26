@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowUp } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, InstagramIcon } from './Icons';
 
-export const Connect: React.FC = () => {
+export const Connect: React.FC<{ accentColor?: string }> = ({ accentColor }) => {
   const scrollToTop = () => {
     const container = document.querySelector('.portfolio-home');
     if (container) {
@@ -75,15 +75,30 @@ export const Connect: React.FC = () => {
       }}>
         <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
           <a href="https://github.com" target="_blank" rel="noreferrer" className="social-link">
-            <div className="icon-circle"><GithubIcon size={20} /></div>
+            <div className="icon-circle" style={{ 
+              borderColor: accentColor ? accentColor.replace('rgb', 'rgba').replace(')', ', 0.6)') : 'rgba(255,255,255,0.4)', 
+              borderWidth: '1.5px' 
+            }}>
+              <GithubIcon size={20} />
+            </div>
             <span>GITHUB</span>
           </a>
           <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social-link">
-            <div className="icon-circle"><LinkedinIcon size={20} /></div>
+            <div className="icon-circle" style={{ 
+              borderColor: accentColor ? accentColor.replace('rgb', 'rgba').replace(')', ', 0.6)') : 'rgba(255,255,255,0.4)', 
+              borderWidth: '1.5px' 
+            }}>
+              <LinkedinIcon size={20} />
+            </div>
             <span>LINKEDIN</span>
           </a>
           <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-link">
-            <div className="icon-circle"><InstagramIcon size={20} /></div>
+            <div className="icon-circle" style={{ 
+              borderColor: accentColor ? accentColor.replace('rgb', 'rgba').replace(')', ', 0.6)') : 'rgba(255,255,255,0.4)', 
+              borderWidth: '1.5px' 
+            }}>
+              <InstagramIcon size={20} />
+            </div>
             <span>INSTAGRAM</span>
           </a>
         </div>
@@ -126,7 +141,7 @@ export const Connect: React.FC = () => {
           align-items: center;
           gap: 12px;
           text-decoration: none;
-          color: rgba(255, 255, 255, 0.4);
+          color: rgba(255, 255, 255, 0.85);
           font-family: var(--font-mono);
           font-size: 0.65rem;
           letter-spacing: 0.15em;
@@ -142,7 +157,7 @@ export const Connect: React.FC = () => {
           width: 48px;
           height: 48px;
           border-radius: 50%;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.3);
           display: flex;
           align-items: center;
           justify-content: center;

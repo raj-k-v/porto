@@ -30,7 +30,7 @@ const IconMap: Record<string, React.ReactNode> = {
 
 export const TechStack: React.FC = () => {
   return (
-    <div style={{ marginBottom: '100px' }}>
+    <div style={{ marginBottom: '40px' }}>
       <div className="section-label">Technical Arsenal</div>
       <div style={{ 
         display: 'grid', 
@@ -40,7 +40,8 @@ export const TechStack: React.FC = () => {
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: '24px',
         overflow: 'hidden',
-        backdropFilter: 'blur(10px)'
+        backdropFilter: 'blur(10px)',
+        willChange: 'transform'
       }}>
         {techStack.map((tech: TechItem) => (
           <div 

@@ -12,6 +12,7 @@ import { TechStack } from '../components/portfolio/TechStack';
 import { Projects } from '../components/portfolio/Projects';
 import { ResumeSection } from '../components/portfolio/ResumeSection';
 import { Connect } from '../components/portfolio/Connect';
+import { Education } from '../components/portfolio/Education';
 import { Footer } from '../components/portfolio/Footer';
 import HomeSceneClickable from '../components/HomeSceneClickable';
 import BackgroundToggle from '../components/BackgroundToggle';
@@ -133,7 +134,7 @@ export default function Home({
     }
 
     // Reveal animations for sections as they scroll into view
-    const sections = ['.bento-item', '.proj-card', '.blog-row', '.section-label', '.connect-section'];
+    const sections = ['.bento-item', '.proj-card', '.blog-row', '.section-label', '.connect-section', '.education-card'];
 
     sections.forEach((selector) => {
       gsap.utils.toArray(selector).forEach((el: any) => {
@@ -540,11 +541,10 @@ export default function Home({
           position: absolute;
           left: 0;
           top: 0;
-          transform: translate3d(var(--mx-px, 50%), var(--my-px, 50%), 0) rotate(var(--mr, 0deg));
           pointer-events: none;
           z-index: 100;
           opacity: 0;
-          transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: opacity 0.4s ease;
           will-change: transform, opacity;
         }
 
@@ -556,10 +556,10 @@ export default function Home({
           border-radius: 99px;
           font-family: var(--font-mono);
           font-size: 0.65rem;
-          font-weight: 500;
+          font-weight: 400;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease;
+          transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6), opacity 0.3s ease;
           box-shadow: 0 15px 45px rgba(0,0,0,0.4), 0 0 15px var(--accent-color)44;
           white-space: nowrap;
           border: 1px solid rgba(255, 255, 255, 0.6);
@@ -575,20 +575,10 @@ export default function Home({
         }
 
         .proj-card:hover .proj-cursor-inner {
-          transform: translate(-50%, -50%) scale(1);
-          animation: cursor-breath 2.5s infinite ease-in-out;
+          transform: translate(-50%, -50%) scale(1.25) rotate(5deg);
         }
 
-        @keyframes cursor-breath {
-          0%, 100% { 
-            transform: translate(-50%, -50%) scale(1); 
-            opacity: 1;
-          }
-          50% { 
-            transform: translate(-50%, -50%) scale(1.05); 
-            opacity: 0.9;
-          }
-        }
+
 
         .proj-tag {
           display: inline-flex;
@@ -683,6 +673,7 @@ export default function Home({
       >
         <Hero handleEasterEggMove={handleEasterEggMove} handleEasterEggLeave={handleEasterEggLeave} />
         <TechStack />
+        <Education />
         <Projects
           selectedProjectName={selectedProject?.name}
           onProjectClick={(p: any, rect?: DOMRect) => {
@@ -691,7 +682,7 @@ export default function Home({
             setSelectedProject(p);
           }}
         />
-        <Connect />
+        <Connect accentColor={accentColor} />
         <ResumeSection />
         <Footer />
       </div>

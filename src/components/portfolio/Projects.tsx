@@ -14,7 +14,21 @@ const ProjectCard: React.FC<{
   selectedProjectName?: string;
 }> = ({ p, onProjectClick, selectedProjectName }) => {
   const cardRef = React.useRef<HTMLDivElement>(null);
+  const labelRef = React.useRef<HTMLDivElement>(null);
   const lastX = React.useRef(0);
+  const xTo = React.useRef<any>(null);
+  const yTo = React.useRef<any>(null);
+  const rTo = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    if (labelRef.current) {
+      import('gsap').then(({ gsap }) => {
+        xTo.current = gsap.quickTo(labelRef.current, "x", { duration: 0.8, ease: "power3.out" });
+        yTo.current = gsap.quickTo(labelRef.current, "y", { duration: 0.8, ease: "power3.out" });
+        rTo.current = gsap.quickTo(labelRef.current, "rotation", { duration: 1.2, ease: "elastic.out(1, 0.3)" });
+      });
+    }
+  }, []);
 
   return (
     <div
@@ -25,19 +39,27 @@ const ProjectCard: React.FC<{
         pointerEvents: selectedProjectName ? 'none' : 'auto'
       }}
       onClick={() => onProjectClick(p, cardRef.current?.getBoundingClientRect())}
+      onMouseEnter={e => {
+        if (!cardRef.current || !labelRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        import('gsap').then(({ gsap }) => {
+          gsap.set(labelRef.current, { x, y });
+        });
+      }}
       onMouseMove={e => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
-        // Dynamic Physics: Calculate horizontal tilt based on velocity
         const dx = e.clientX - lastX.current;
-        const rotation = Math.max(-15, Math.min(15, dx * 0.8));
+        const rotation = Math.max(-15, Math.min(15, dx * 1.2));
         
-        cardRef.current.style.setProperty('--mx-px', `${x}px`);
-        cardRef.current.style.setProperty('--my-px', `${y}px`);
-        cardRef.current.style.setProperty('--mr', `${rotation}deg`);
+        if (xTo.current) xTo.current(x);
+        if (yTo.current) yTo.current(y);
+        if (rTo.current) rTo.current(rotation);
         
         lastX.current = e.clientX;
       }}
@@ -67,7 +89,7 @@ const ProjectCard: React.FC<{
       </div>
 
       {/* Cursor Follower Label */}
-      <div className="proj-cursor-label">
+      <div ref={labelRef} className="proj-cursor-label">
         <div className="proj-cursor-inner">PREVIEW</div>
       </div>
     </div>
