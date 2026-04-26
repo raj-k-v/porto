@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot } from 'lucide-react';
 import { gsap } from 'gsap';
-import { fetchChatResponse } from '../lib/utils';
+
 import { parseMarkdown } from '../lib/markdown';
 
 interface Message {
@@ -16,7 +16,7 @@ const Chatbot: React.FC = () => {
     { text: "Hi! I'm Teddu, Raj's AI assistant. Ask me anything about his projects, skills, or experience!", sender: 'bot' }
   ]);
   const [isTyping, setIsTyping] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const chatContentRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
